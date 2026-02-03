@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Станеш моїм Валентином?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-pink-dark: #e89fb1;
+            --color-pink-light: #ffe4e1;
+            --color-red: #ff5e78;
+            --color-white: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: radial-gradient(circle at center, var(--color-pink-light), var(--color-pink-dark));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            animation: sparkle 60s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes sparkle {
+            from { background-position: 0 0, 40px 60px, 130px 270px; }
+            to { background-position: 550px 550px, 390px 410px, 380px 520px; }
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .guinea-pig-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+        }
+
+        .so-happy {
+            animation: happyJump 1s ease infinite alternate !important;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes happyJump {
+             0% { transform: scale(1) rotate(0deg); }
+             100% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        h1 {
+            color: var(--color-red);
+            font-family: 'Pacifico', cursive;
+            font-size: 2.2em;
+            margin: 20px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            min-height: 1.2em;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            position: relative; 
+            min-height: 60px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1em;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95) !important;
+        }
+
+        #yesBtn {
+            background-color: var(--color-red);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 94, 120, 0.3);
+            flex-grow: 1;
+            max-width: 150px;
+            z-index: 2;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 94, 120, 0.5);
+        }
+
+        #noBtn {
+            background-color: var(--color-pink-dark);
+            color: white;
+            box-shadow: 0 4px 15px rgba(192, 124, 141, 0.3);
+            z-index: 3;
+            transition: all 0.4s ease-out; 
+        }
+        #noBtn.runaway {
+            position: fixed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <img id="mainImage" class="guinea-pig-img" src="image_2.png" alt="Морська свинка з сердечком">
+        
+        <h1 id="message">Yivha, will you be my Valentine?</h1>
+        
+        <div class="button-container" id="btnContainer">
+            <button class="btn" id="yesBtn">Yes</button>
+            <button class="btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+
+    <script>
+        const mainImage = document.getElementById('mainImage');
+        const message = document.getElementById('message');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const btnContainer = document.getElementById('btnContainer');
+        const imgSad = 'image_0.png';
+        const imgHappy = 'image_1.png';
+        const imgAsk = 'image_2.png';
+
+        let isSad = false;
+
+        yesBtn.addEventListener('click', () => {
+            mainImage.src = imgHappy;
+            mainImage.classList.add('so-happy');
+            message.innerHTML = "Hooray! I'm the happiest! <br> I love you! ❤️";
+            btnContainer.style.display = 'none';
+        });
+
+        function showSadness() {
+            if (!isSad) {
+                mainImage.src = imgSad;
+                mainImage.style.animation = 'none';
+                mainImage.style.transform = 'scale(0.95)';
+                isSad = true;
+            }
+        }
+
+        function revertSadness() {
+            if (isSad) {
+                mainImage.src = imgAsk;
+                // Відновлюємо анімацію
+                mainImage.style.animation = 'float 3s ease-in-out infinite';
+                mainImage.style.transform = 'scale(1)';
+                isSad = false;
+            }
+        }
+
+        noBtn.addEventListener('mousedown', showSadness);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); showSadness(); });
+
+        // Використовуємо mouseup/mouseleave/touchend для визначення відпускання
+        noBtn.addEventListener('mouseup', revertSadness);
+        noBtn.addEventListener('mouseleave', revertSadness);
+        noBtn.addEventListener('touchend', revertSadness);
+
+
+        noBtn.addEventListener('click', function() {
+            revertSadness();
+
+            this.classList.add('runaway');
+
+            const maxX = window.innerWidth - this.offsetWidth - 20; // -20 для відступу від краю
+            const maxY = window.innerHeight - this.offsetHeight - 20;
+
+            // Генеруємо випадкові координати
+            const randomX = Math.max(10, Math.random() * maxX);
+            const randomY = Math.max(10, Math.random() * maxY);
+
+            this.style.left = randomX + 'px';
+            this.style.top = randomY + 'px';
+        });
+
+    </script>
+</body>
+</html>
