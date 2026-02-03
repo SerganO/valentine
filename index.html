@@ -25,6 +25,8 @@
             align-items: center;
             overflow: hidden;
             position: relative;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body::before {
@@ -64,6 +66,7 @@
             border-radius: 20px;
             animation: float 3s ease-in-out infinite;
             transition: transform 0.3s ease, opacity 0.2s ease;
+            pointer-events: none;
         }
 
         .so-happy {
@@ -108,6 +111,7 @@
             font-weight: 800;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn:active {
@@ -123,18 +127,14 @@
             z-index: 2;
         }
 
-        #yesBtn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(255, 94, 120, 0.5);
-        }
-
         #noBtn {
             background-color: var(--color-pink-dark);
             color: white;
             box-shadow: 0 4px 15px rgba(192, 124, 141, 0.3);
-            z-index: 3;
+            z-index: 100;
             transition: all 0.4s ease-out; 
         }
+        
         #noBtn.runaway {
             position: fixed;
         }
@@ -143,9 +143,9 @@
 <body>
 
     <div class="card">
-        <img id="mainImage" class="guinea-pig-img" src="image_2.png" alt="Морська свинка з сердечком">
+        <img id="mainImage" class="guinea-pig-img" src="image_2.png" alt="Морська свинка">
         
-        <h1 id="message">Yivha, will you be my Valentine?</h1>
+        <h1 id="message">Will you be my Valentine?</h1>
         
         <div class="button-container" id="btnContainer">
             <button class="btn" id="yesBtn">Yes</button>
@@ -153,13 +153,13 @@
         </div>
     </div>
 
-
     <script>
         const mainImage = document.getElementById('mainImage');
         const message = document.getElementById('message');
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const btnContainer = document.getElementById('btnContainer');
+
         const imgSad = 'image_0.png';
         const imgHappy = 'image_1.png';
         const imgAsk = 'image_2.png';
@@ -173,7 +173,7 @@
             btnContainer.style.display = 'none';
         });
 
-        function showSadness() {
+        function setSad() {
             if (!isSad) {
                 mainImage.src = imgSad;
                 mainImage.style.animation = 'none';
@@ -182,39 +182,49 @@
             }
         }
 
-        function revertSadness() {
+        function setNormal() {
             if (isSad) {
                 mainImage.src = imgAsk;
-                // Відновлюємо анімацію
                 mainImage.style.animation = 'float 3s ease-in-out infinite';
                 mainImage.style.transform = 'scale(1)';
                 isSad = false;
             }
         }
 
-        noBtn.addEventListener('mousedown', showSadness);
-        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); showSadness(); });
+        function moveButton() {
+            noBtn.classList.add('runaway');
 
-        // Використовуємо mouseup/mouseleave/touchend для визначення відпускання
-        noBtn.addEventListener('mouseup', revertSadness);
-        noBtn.addEventListener('mouseleave', revertSadness);
-        noBtn.addEventListener('touchend', revertSadness);
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
-
-        noBtn.addEventListener('click', function() {
-            revertSadness();
-
-            this.classList.add('runaway');
-
-            const maxX = window.innerWidth - this.offsetWidth - 20; // -20 для відступу від краю
-            const maxY = window.innerHeight - this.offsetHeight - 20;
-
-            // Генеруємо випадкові координати
             const randomX = Math.max(10, Math.random() * maxX);
             const randomY = Math.max(10, Math.random() * maxY);
 
-            this.style.left = randomX + 'px';
-            this.style.top = randomY + 'px';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            setSad();
+        });
+
+        noBtn.addEventListener('touchend', (e) => {
+            e.preventDefault(); 
+            setNormal(); 
+            moveButton();
+        });
+
+        noBtn.addEventListener('mousedown', setSad);
+        
+        noBtn.addEventListener('mouseup', () => {
+            setNormal();
+        });
+        
+        noBtn.addEventListener('mouseleave', setNormal);
+
+        noBtn.addEventListener('click', (e) => {
+            moveButton();
         });
 
     </script>
